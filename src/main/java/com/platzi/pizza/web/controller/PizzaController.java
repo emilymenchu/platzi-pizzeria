@@ -3,6 +3,7 @@ package com.platzi.pizza.web.controller;
 import com.platzi.pizza.persistence.entity.PizzaEntity;
 import com.platzi.pizza.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,16 +19,36 @@ public class PizzaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PizzaEntity>> getAll(){
-        return ResponseEntity.ok(this.pizzaService.getAll());
+    public ResponseEntity<Page<PizzaEntity>> getAll(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "8") int size){
+        return ResponseEntity.ok(this.pizzaService.getAll(page, size));
     }
     @GetMapping("/available")
-    public ResponseEntity<List<PizzaEntity>> available(){
-        return ResponseEntity.ok(this.pizzaService.getAvailable());
+    public ResponseEntity<Page<PizzaEntity>> available(@RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "8") int size,
+                                                       @RequestParam(defaultValue = "price") String sortBy,
+                                                       @RequestParam(defaultValue = "ASC") String sortDirection){
+        return ResponseEntity.ok(this.pizzaService.getAvailable(page, size, sortBy, sortDirection));
+    }
+    @GetMapping("/with/{ingridient}")
+    public ResponseEntity<List<PizzaEntity>> getWith(@PathVariable String ingridient){
+        return ResponseEntity.ok(this.pizzaService.getWith(ingridient));
+    }
+    @GetMapping("/without/{ingridient}")
+    public ResponseEntity<List<PizzaEntity>> getWithout(@PathVariable String ingridient){
+        return ResponseEntity.ok(this.pizzaService.getWithout(ingridient));
+    }
+    @GetMapping("/cheapest/{price}")
+    public ResponseEntity<List<PizzaEntity>> getCheapestPizzas(@PathVariable double price){
+        return ResponseEntity.ok(this.pizzaService.getCheapest(price));
+    }
+    @GetMapping("/vegan-or-vegetarian")
+    public ResponseEntity<List<PizzaEntity>> getVeganOrVegetarian(){
+        return ResponseEntity.ok(this.pizzaService.getVeganOrVegetarian());
     }
     @GetMapping("/available/{name}")
     public ResponseEntity<PizzaEntity> findById(@PathVariable String name){
-        return ResponseEntity.ok(this.pizzaService.findByAvailableAndName(name));
+        return ResponseEntity.ok(this.pizzaService.findFirstByAvailableAndName(name));
     }
     @GetMapping("/{idPizza}")
     public ResponseEntity<PizzaEntity> findById(@PathVariable Integer idPizza){

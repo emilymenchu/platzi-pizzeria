@@ -25,6 +25,7 @@ public class PizzaController {
         return ResponseEntity.ok(this.pizzaService.getAll(page, size));
     }
     @GetMapping("/available")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Page<PizzaEntity>> available(@RequestParam(defaultValue = "0") int page,
                                                        @RequestParam(defaultValue = "8") int size,
                                                        @RequestParam(defaultValue = "price") String sortBy,

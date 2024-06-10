@@ -5,6 +5,7 @@ import com.platzi.pizza.persistence.projection.OrderSummary;
 import com.platzi.pizza.persistence.repository.OrderRepository;
 import com.platzi.pizza.service.dto.RandomOrderDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,6 @@ public class OrderService {
 
     public List<OrderEntity> findAll(){
         List<OrderEntity> orders = this.orderRepository.findAll();
-        orders.forEach(o -> System.out.println(o.getCustomerEntity().getName()));
         return orders;
     }
 
@@ -41,6 +41,7 @@ public class OrderService {
         return this.orderRepository.findAllByMethodIn(methods);
     }
 
+    @Secured("ROLE_ADMIN")
     public List<OrderEntity> getCustomerOrders(String idCustomer){
         return this.orderRepository.findCustomerOrders(idCustomer);
     }
